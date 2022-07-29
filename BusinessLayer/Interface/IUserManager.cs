@@ -11,6 +11,6 @@ namespace BusinessLayer.Interface
         LoginResponseModel Login(LoginModel user);
         string ForgotPassword(string emailId);
         string ResetPassword(ResetPassModel user);
-
+        UserRegisterModel GetUserById(int userId);
     }
 }

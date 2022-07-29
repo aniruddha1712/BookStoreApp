@@ -104,5 +104,26 @@ namespace BookStore.Controllers
                 throw new Exception(ex.Message);
             }
         }
+        [HttpGet]
+        [Route("getuserbyid")]
+        public IActionResult GetUserById(int userId)
+        {
+            try
+            {
+                var result = manager.GetUserById(userId);
+                if (result != null)
+                {
+                    return this.Ok(new ResponseModel<UserRegisterModel> { Status = true, Message = "User details", Data = result });
+                }
+                else
+                {
+                    return this.BadRequest(new ResponseModel<string>() { Status = false, Message = "User does not exist" });
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+        }
     }
 }

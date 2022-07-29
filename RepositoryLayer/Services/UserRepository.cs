@@ -171,6 +171,50 @@ namespace RepositoryLayer.Services
                 throw new Exception(ex.Message);
             }
         }
+        public UserRegisterModel GetUserById(int userId)
+        {
+            UserRegisterModel user = new UserRegisterModel();
+            using SqlConnection connection = new SqlConnection(Configuration["ConnectionString:BookStore"]);
+            try
+            {
+                SqlCommand command = new SqlCommand("spGetUserById", connection);
+                command.CommandType = CommandType.StoredProcedure;
+
+                command.Parameters.AddWithValue("@UserId", userId);
+
+                connection.Open();
+                SqlDataReader reader = command.ExecuteReader();
+
+                if (reader.HasRows)
+                {
+                    while (reader.Read())
+                    {
+                        user = ReadUserDetails(user, reader);
+                        return user;
+                    }
+                }
+                else
+                {
+                    connection.Close();
+                    return null;
+                }
+
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+            return default;
+        }
+        public static UserRegisterModel ReadUserDetails(UserRegisterModel user, SqlDataReader reader)
+        {
+            user.UserId = Convert.ToInt32(reader["UserId"] == DBNull.Value ? default : reader["UserId"]);
+            user.FullName = Convert.ToString(reader["FullName"] == DBNull.Value ? default : reader["FullName"]);
+            user.EmailId = Convert.ToString(reader["EmailId"] == DBNull.Value ? default : reader["EmailId"]);
+            user.MobileNumber = Convert.ToInt64(reader["MobileNumber"] == DBNull.Value ? default : reader["MobileNumber"]);
+
+            return user;
+        }
         public static string EncryptPassword(string password)
         {
             try

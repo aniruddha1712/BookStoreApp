@@ -62,5 +62,17 @@ namespace BusinessLayer.Services
                 throw new Exception(ex.Message);
             }
         }
+        public UserRegisterModel GetUserById(int userId)
+        {
+            try
+            {
+                return repository.GetUserById(userId);
+            }
+            catch (Exception ex)
+            {
+
+                throw new Exception(ex.Message);
+            }
+        }
     }
 }

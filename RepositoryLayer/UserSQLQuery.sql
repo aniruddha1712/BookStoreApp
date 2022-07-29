@@ -55,3 +55,12 @@ as
 begin
 	update Users set Password = @Password where EmailId = @EmailId;
 end
+
+--get user by Id--
+create procedure spGetUserById(
+	@UserId int
+	)
+as
+begin
+	select * from Users where UserId= @UserId;
+end
