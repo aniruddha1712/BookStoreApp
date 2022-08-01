@@ -122,7 +122,7 @@ namespace RepositoryLayer.Services
                         {
                             var userId = Convert.ToInt32(reader["UserId"] == DBNull.Value ? default : reader["UserId"]);
 
-                            string token = GenerateJwtToken(emailId, userId);
+                            string token = GenerateJwtTokenForReset(emailId, userId);
                             this.MSMQSend("Link for resetting the password "+ token);
                             this.SendEmail(emailId);
                             return "We will send you an email for resetting password";
@@ -255,12 +255,11 @@ namespace RepositoryLayer.Services
             {
                 Subject = new ClaimsIdentity(new[]
                 {
+                    new Claim(ClaimTypes.Role, "User"),
                     new Claim(ClaimTypes.Email, emailID),
                     new Claim("UserId", userId.ToString())
                 }),
                 Expires = DateTime.UtcNow.AddDays(2),
-                Issuer = "https://localhost:44378/",
-                Audience = "https://localhost:44378/",
                 SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
             };
             var token = tokenHandler.CreateToken(tokenDescriptor);
@@ -331,6 +330,23 @@ namespace RepositoryLayer.Services
             smtp.Credentials = new NetworkCredential("ani964449@gmail.com", "fhznoukckoiqbxvn");
             smtp.Send(mailMessage);
             return true;
+        }
+        public static string GenerateJwtTokenForReset(string emailID, int userId)
+        {
+            var tokenHandler = new JwtSecurityTokenHandler();
+            var key = Encoding.ASCII.GetBytes("THISISKEYTOGENERATETOKEN");
+            var tokenDescriptor = new SecurityTokenDescriptor
+            {
+                Subject = new ClaimsIdentity(new[]
+                {
+                    new Claim(ClaimTypes.Email, emailID),
+                    new Claim("UserId", userId.ToString())
+                }),
+                Expires = DateTime.UtcNow.AddDays(2),
+                SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
+            };
+            var token = tokenHandler.CreateToken(tokenDescriptor);
+            return tokenHandler.WriteToken(token);
         }
     }
 }
