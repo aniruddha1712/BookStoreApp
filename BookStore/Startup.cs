@@ -40,6 +40,8 @@ namespace BookStore
             services.AddTransient<IAdminManager, AdminManager>();
             services.AddTransient<ICartRepository, CartRepository>();
             services.AddTransient<ICartManager, CartManager>();
+            services.AddTransient<IWishlistRepository, WishlistRepository>();
+            services.AddTransient<IWishlistManager, WishlistManager>();
 
             services.AddSwaggerGen(setup =>
             {
@@ -97,9 +99,9 @@ namespace BookStore
 
             app.UseRouting();
 
-            app.UseAuthorization();
-
             app.UseAuthentication();
+
+            app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>
             {

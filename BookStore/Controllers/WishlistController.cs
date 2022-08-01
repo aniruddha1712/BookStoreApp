@@ -1,5 +1,4 @@
 ﻿using BusinessLayer.Interface;
-using CommonLayer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System;
@@ -12,25 +11,24 @@ namespace BookStore.Controllers
     [Authorize(Roles = Role.User)]
     [ApiController]
     [Route("[Controller]")]
-    public class CartController : Controller
+    public class WishlistController : Controller
     {
-        private readonly ICartManager manager;
+        private readonly IWishlistManager manager;
 
-        public CartController(ICartManager manager)
+        public WishlistController(IWishlistManager manager)
         {
             this.manager = manager;
         }
-
-        [HttpPost("addtocart")]
-        public IActionResult AddToCart(AddToCartModel cart)
+        [HttpPost("addtowishlist")]
+        public IActionResult AddToWishlist(int bookId)
         {
             try
             {
                 int userId = Convert.ToInt32(User.Claims.FirstOrDefault(x => x.Type == "UserId").Value);
-                var result = manager.AddToCart(cart,userId);
+                var result = manager.AddToWishlist(bookId, userId);
                 if (result != null)
                 {
-                    return this.Ok(new { Status = true, Message = "Added to Cart", Data = result });
+                    return this.Ok(new { Status = true, Data = result });
                 }
                 else
                 {
@@ -42,39 +40,16 @@ namespace BookStore.Controllers
                 throw new Exception(ex.Message);
             }
         }
-
-        [HttpPut("updatecart")]
-        public IActionResult UpdateCart(int cartId, int bookQty)
+        [HttpDelete("removefromwishlist")]
+        public IActionResult RemoveFromWishlist(int wishlistId)
         {
             try
             {
                 int userId = Convert.ToInt32(User.Claims.FirstOrDefault(x => x.Type == "UserId").Value);
-                var result = manager.UpdateCart(cartId, bookQty);
-                if (result == "Quantity updated")
-                {
-                    return this.Ok(new { Status = true, Data = result });
-                }
-                else
-                {
-                    return this.BadRequest(new { Status = false, Data = result });
-                }
-            }
-            catch (Exception ex)
-            {
-                throw new Exception(ex.Message);
-            }
-        }
-
-        [HttpDelete("removefromcart")]
-        public IActionResult RemoveFromCart(int cartId)
-        {
-            try
-            {
-                int userId = Convert.ToInt32(User.Claims.FirstOrDefault(x => x.Type == "UserId").Value);
-                var result = manager.RemoveFromCart(cartId);
+                var result = manager.RemoveFromWishlist(wishlistId);
                 if (result == true)
                 {
-                    return this.Ok(new { Status = true, Message="Removed from Cart"});
+                    return this.Ok(new { Status = true, Message = "Removed from wishlist" });
                 }
                 else
                 {
@@ -87,16 +62,16 @@ namespace BookStore.Controllers
             }
         }
 
-        [HttpGet("getcartitem")]
-        public IActionResult GetCartItem()
+        [HttpGet("getwishlistitem")]
+        public IActionResult GetWishlistItem()
         {
             try
             {
                 int userId = Convert.ToInt32(User.Claims.FirstOrDefault(x => x.Type == "UserId").Value);
-                var result = manager.GetCartItem(userId);
+                var result = manager.GetWishlistItem(userId);
                 if (result != null)
                 {
-                    return this.Ok(new { Status = true, Data=result });
+                    return this.Ok(new { Status = true, Data = result });
                 }
                 else
                 {

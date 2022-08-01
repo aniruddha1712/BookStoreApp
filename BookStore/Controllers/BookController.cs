@@ -20,27 +20,20 @@ namespace BookStore.Controllers
             this.manager = manager;
         }
 
-        //[Authorize(Roles = Role.Admin)]
+        [Authorize(Roles = Role.Admin)]
         [HttpPost("addbook")]
         public IActionResult AddBook(BookModel book)
         {
             try
             {
-                if (Convert.ToInt32(User.Claims.FirstOrDefault(x => x.Type == "AdminId").Value) == 1)
+                var result = manager.AddBook(book);
+                if (result != null)
                 {
-                    var result = manager.AddBook(book);
-                    if (result != null)
-                    {
-                        return this.Ok(new { Status = true, Message = "Book added", Data = result });
-                    }
-                    else
-                    {
-                        return this.BadRequest(new { Status = false, Message = "Faild to Add" });
-                    }
+                    return this.Ok(new { Status = true, Message = "Book added", Data = result });
                 }
                 else
                 {
-                    return this.BadRequest(new { Status = false, Message = "Unauthorize Admin" });
+                    return this.BadRequest(new { Status = false, Message = "Faild to Add" });
                 }
             }
             catch (Exception ex)
@@ -48,28 +41,21 @@ namespace BookStore.Controllers
                 throw new Exception(ex.Message);
             }
         }
-        //[Authorize(Roles = Role.Admin)]
+        [Authorize(Roles = Role.Admin)]
         [HttpPut]
         [Route("updatebook")]
         public IActionResult UpdateBook(BookModel book)
         {
             try
             {
-                if (Convert.ToInt32(User.Claims.FirstOrDefault(x => x.Type == "AdminId").Value) == 1)
+                var result = manager.UpdateBook(book);
+                if (result != null)
                 {
-                    var result = manager.UpdateBook(book);
-                    if (result != null)
-                    {
-                        return this.Ok(new { Status = true, Message = "Book updated", Data = result });
-                    }
-                    else
-                    {
-                        return this.BadRequest(new { Status = false, Message = "Faild to update" });
-                    }
+                    return this.Ok(new { Status = true, Message = "Book updated", Data = result });
                 }
                 else
                 {
-                    return this.BadRequest(new { Status = false, Message = "Unauthorize Admin" });
+                    return this.BadRequest(new { Status = false, Message = "Faild to update" });
                 }
             }
             catch (Exception ex)
@@ -77,28 +63,21 @@ namespace BookStore.Controllers
                 throw new Exception(ex.Message);
             }
         }
-        //[Authorize(Roles = Role.Admin)]
+        [Authorize(Roles = Role.Admin)]
         [HttpDelete]
         [Route("deletebook")]
         public IActionResult DeleteBook(int bookId)
         {
             try
             {
-                if (Convert.ToInt32(User.Claims.FirstOrDefault(x => x.Type == "AdminId").Value) == 1)
+                var result = manager.DeleteBook(bookId);
+                if (result == true)
                 {
-                    var result = manager.DeleteBook(bookId);
-                    if (result == true)
-                    {
-                        return this.Ok(new { Status = true, Message = "Book deleted" });
-                    }
-                    else
-                    {
-                        return this.BadRequest(new { Status = false, Message = "Book does not exist" });
-                    }
+                    return this.Ok(new { Status = true, Message = "Book deleted" });
                 }
                 else
                 {
-                    return this.BadRequest(new { Status = false, Message = "Unauthorize Admin" });
+                    return this.BadRequest(new { Status = false, Message = "Book does not exist" });
                 }
             }
             catch (Exception ex)
@@ -106,7 +85,7 @@ namespace BookStore.Controllers
                 return this.BadRequest(new { ex.Message });
             }
         }
-
+        [Authorize]
         [HttpGet]
         [Route("getallbooks")]
         public IActionResult GetAllBooks()
