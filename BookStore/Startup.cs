@@ -38,6 +38,8 @@ namespace BookStore
             services.AddTransient<IBookManager, BookManager>();
             services.AddTransient<IAdminRepository, AdminRepository>();
             services.AddTransient<IAdminManager, AdminManager>();
+            services.AddTransient<ICartRepository, CartRepository>();
+            services.AddTransient<ICartManager, CartManager>();
 
             services.AddSwaggerGen(setup =>
             {

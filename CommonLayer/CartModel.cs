@@ -10,6 +10,11 @@ namespace CommonLayer
         public int UserId { get; set; }
         public int BookId { get; set; }
         public int BookInCart { get; set; }
-        public BookModel Bookmodel { get; set; }
+        public string BookName { get; set; }
+        public string BookImage { get; set; }
+        public string Author { get; set; }
+        public double DiscountPrice { get; set; }
+        public double ActualPrice { get; set; }
+        public int BookQuantity { get; set; }
     }
 }
