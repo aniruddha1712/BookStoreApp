@@ -42,6 +42,8 @@ namespace BookStore
             services.AddTransient<ICartManager, CartManager>();
             services.AddTransient<IWishlistRepository, WishlistRepository>();
             services.AddTransient<IWishlistManager, WishlistManager>();
+            services.AddTransient<IAddressRepository, AddressRepository>();
+            services.AddTransient<IAddressManager, AddressManager>();
 
             services.AddSwaggerGen(setup =>
             {
