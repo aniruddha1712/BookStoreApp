@@ -46,6 +46,8 @@ namespace BookStore
             services.AddTransient<IAddressManager, AddressManager>();
             services.AddTransient<IFeedbackRepository, FeedbackRepository>();
             services.AddTransient<IFeedbackManager, FeedbackManager>();
+            services.AddTransient<IOrderRepository, OrderRepository>();
+            services.AddTransient<IOrderManager, OrderManager>();
 
             services.AddSwaggerGen(setup =>
             {
@@ -90,6 +92,15 @@ namespace BookStore
                     ValidateAudience = false
                 };
             });
+            // to connect with frontened
+            services.AddCors(options =>
+            {
+                options.AddPolicy(
+                name: "AllowOrigin",
+              builder => {
+                  builder.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader();
+              });
+            });
         }
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
@@ -102,6 +113,8 @@ namespace BookStore
             app.UseHttpsRedirection();
 
             app.UseRouting();
+
+            app.UseCors("AllowOrigin");
 
             app.UseAuthentication();
 

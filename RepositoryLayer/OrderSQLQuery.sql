@@ -43,3 +43,16 @@ begin
 		End Catch
 	end
 end
+
+--get all orders--
+create proc spGetAllOrders(@UserId int)
+as
+begin
+	select 
+		Orders.OrderId, Orders.UserId, Orders.AddressId, Books.BookId,
+		Orders.TotalPrice, Orders.OrderQty, Orders.OrderDate,
+		Books.BookName, Books.Author, Books.BookImage
+		from Books 
+		inner join Orders on Orders.BookId = Books.BookId 
+		where Orders.UserId = @UserId; 
+end
