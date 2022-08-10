@@ -1,9 +1,11 @@
 ﻿using BusinessLayer.Interface;
 using CommonLayer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 
 namespace BookStore.Controllers
@@ -63,7 +65,7 @@ namespace BookStore.Controllers
             }
         }
         [HttpPost]
-        [Route("forgotpassword")]
+        [Route("forgotpassword/{email}")]
         public IActionResult ForgotPassword(string email)
         {
             try
@@ -83,13 +85,15 @@ namespace BookStore.Controllers
                 throw new Exception(ex.Message);
             }
         }
+        [Authorize]
         [HttpPut]
         [Route("resetpassword")]
         public IActionResult ResetPassword(ResetPassModel user)
         {
             try
             {
-                var result = manager.ResetPassword(user);
+                var emailId = User.FindFirst(ClaimTypes.Email).Value;
+                var result = manager.ResetPassword(user,emailId);
                 if (result.Equals("Password Updated"))
                 {
                     return this.Ok(new { Status = true, Message = result });

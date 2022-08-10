@@ -42,7 +42,7 @@ namespace RepositoryLayer.Services
                 var result = command.ExecuteNonQuery();
                 connection.Close();
 
-                if(result != 0)
+                if(result == 1)
                 {
                     return user;
                 }
@@ -123,7 +123,7 @@ namespace RepositoryLayer.Services
                             var userId = Convert.ToInt32(reader["UserId"] == DBNull.Value ? default : reader["UserId"]);
 
                             string token = GenerateJwtTokenForReset(emailId, userId);
-                            this.MSMQSend("Link for resetting the password "+ token);
+                            this.MSMQSend(token);
                             this.SendEmail(emailId);
                             return "We will send you an email for resetting password";
                         }
@@ -140,7 +140,7 @@ namespace RepositoryLayer.Services
             }
             return default;
         }
-        public string ResetPassword(ResetPassModel user)
+        public string ResetPassword(ResetPassModel user,string emailId)
         {
             using SqlConnection connection = new SqlConnection(Configuration["ConnectionString:BookStore"]);
             try
@@ -150,7 +150,7 @@ namespace RepositoryLayer.Services
 
                 var encryptedPass = EncryptPassword(user.Password);
 
-                command.Parameters.AddWithValue("@EmailId", user.EmailId);
+                command.Parameters.AddWithValue("@EmailId", emailId);
                 command.Parameters.AddWithValue("@Password", encryptedPass);
 
                 connection.Open();
@@ -259,7 +259,7 @@ namespace RepositoryLayer.Services
                     new Claim(ClaimTypes.Email, emailID),
                     new Claim("UserId", userId.ToString())
                 }),
-                Expires = DateTime.UtcNow.AddDays(2),
+                Expires = DateTime.UtcNow.AddDays(20),
                 SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
             };
             var token = tokenHandler.CreateToken(tokenDescriptor);
@@ -289,14 +289,14 @@ namespace RepositoryLayer.Services
 
             return messageQueue;
         }
-        private void MSMQSend(string url)
+        private void MSMQSend(string token)
         {
             try
             {
                 MessageQueue messageQueue = this.QueueDetail();
                 Message message = new Message();
                 message.Formatter = new BinaryMessageFormatter();
-                message.Body = url;
+                message.Body = token;
                 messageQueue.Label = "url link";
                 messageQueue.Send(message);
             }
@@ -315,7 +315,7 @@ namespace RepositoryLayer.Services
             string linkToBeSend = receiveMsg.Body.ToString();
             return linkToBeSend;
         }
-        private bool SendMailUsingSMTP(string email, string message)
+        private bool SendMailUsingSMTP(string email, string token)
         {
             MailMessage mailMessage = new MailMessage();
             SmtpClient smtp = new SmtpClient();
@@ -323,7 +323,19 @@ namespace RepositoryLayer.Services
             mailMessage.To.Add(new MailAddress(email));
             mailMessage.Subject = "Link to reset you password for Bookstore Application";
             mailMessage.IsBodyHtml = true;
-            mailMessage.Body = message;
+            mailMessage.Body = $"<!DOCTYPE html>" +
+                                   $"<html>" +
+                                   $"<html lang=\"en\">" +
+                                    $"<head>" +
+                                    $"<meta charset=\"UTF - 8\">" +
+                                    $"</head>" +
+                                    $"<body>" +
+                                    $"<h2> Dear Book Store User, </h2>\n" +
+                                    $"<h3> Please click on the below link to reset password</h3>" +
+                                    $"<a href='http://localhost:4200/resetpassword/{token}'> ClickHere </a>\n " +
+                                    $"<h3 style = \"color: #EA4335\"> \nThe link is valid for 2 days </h3>" +
+                                    $"</body>" +
+                                   $"</html>";
             smtp.Port = 587;
             smtp.Host = "smtp.gmail.com";
             smtp.EnableSsl = true;

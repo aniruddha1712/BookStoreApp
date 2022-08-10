@@ -16,8 +16,11 @@ create proc spAddToWishlist(
 	)
 as
 begin
-	insert into Wishlist
-	values(@UserId,@BookId);
+	if(not exists(select * from Wishlist where BookId=@BookId and UserId=@UserId))
+	begin
+		insert into Wishlist
+		values(@UserId,@BookId);
+	end
 end
 
 --remove from wishlist--

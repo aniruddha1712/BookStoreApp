@@ -34,7 +34,7 @@ namespace RepositoryLayer.Services
                 var result = command.ExecuteNonQuery();
                 connection.Close();
 
-                if (result != 0)
+                if (result == 1)
                 {
                     return cart;
                 }

@@ -42,7 +42,7 @@ namespace BookStore.Controllers
                 throw new Exception(ex.Message);
             }
         }
-        [HttpGet("getfeedback")]
+        [HttpGet("getfeedback/{bookId}")]
         public IActionResult GetFeedback(int bookId)
         {
             try

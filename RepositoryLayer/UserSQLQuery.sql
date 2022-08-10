@@ -24,8 +24,11 @@ create procedure spRegister(
 	)
 as
 begin
-	insert into Users
-	values(@FullName,@EmailId,@Password,@MobileNumber);
+	if(not exists(select EmailId from Users where EmailId=@EmailId))
+	begin
+		insert into Users
+		values(@FullName,@EmailId,@Password,@MobileNumber);
+	end
 end
 
 --Login--

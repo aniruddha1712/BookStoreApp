@@ -50,11 +50,11 @@ namespace BusinessLayer.Services
                 throw new Exception(ex.Message);
             }
         }
-        public string ResetPassword(ResetPassModel user)
+        public string ResetPassword(ResetPassModel user, string emailId)
         {
             try
             {
-                return repository.ResetPassword(user);
+                return repository.ResetPassword(user,emailId);
             }
             catch (Exception ex)
             {

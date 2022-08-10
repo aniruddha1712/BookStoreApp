@@ -19,7 +19,7 @@ namespace BookStore.Controllers
         {
             this.manager = manager;
         }
-        [HttpPost("addtowishlist")]
+        [HttpPost("addtowishlist/{bookId}")]
         public IActionResult AddToWishlist(int bookId)
         {
             try
@@ -40,7 +40,7 @@ namespace BookStore.Controllers
                 throw new Exception(ex.Message);
             }
         }
-        [HttpDelete("removefromwishlist")]
+        [HttpDelete("removefromwishlist/{wishlistId}")]
         public IActionResult RemoveFromWishlist(int wishlistId)
         {
             try

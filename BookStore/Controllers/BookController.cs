@@ -85,7 +85,7 @@ namespace BookStore.Controllers
                 return this.BadRequest(new { ex.Message });
             }
         }
-        [Authorize]
+        //[Authorize]
         [HttpGet]
         [Route("getallbooks")]
         public IActionResult GetAllBooks()
@@ -108,7 +108,7 @@ namespace BookStore.Controllers
             }
         }
         [HttpGet]
-        [Route("getbookbyId")]
+        [Route("getbookbyId/{bookId}")]
         public IActionResult GetBookById(int bookId)
         {
             try

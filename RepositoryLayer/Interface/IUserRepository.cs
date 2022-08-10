@@ -10,7 +10,7 @@ namespace RepositoryLayer.Interface
         UserRegisterModel Register(UserRegisterModel user);
         LoginResponseModel Login(LoginModel user);
         string ForgotPassword(string emailId);
-        string ResetPassword(ResetPassModel user);
+        string ResetPassword(ResetPassModel user, string emailId);
         UserRegisterModel GetUserById(int userId);
     }
 }

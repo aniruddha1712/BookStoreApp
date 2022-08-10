@@ -17,8 +17,11 @@ create proc spAddToCart(
 	)
 as
 begin
-	insert into Cart
-	values(@BookInCart,@UserId,@BookId);
+	if(not exists(select * from Cart where BookId=@BookId and UserId=@UserId))
+	begin
+		insert into Cart
+		values(@BookInCart,@UserId,@BookId);
+	end
 end
 
 --update cart--
