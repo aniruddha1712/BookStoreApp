@@ -43,7 +43,7 @@ namespace BookStore.Controllers
             }
         }
 
-        [HttpPut("updatecart")]
+        [HttpPut("updatecart/{cartId}/{bookQty}")]
         public IActionResult UpdateCart(int cartId, int bookQty)
         {
             try
@@ -65,7 +65,7 @@ namespace BookStore.Controllers
             }
         }
 
-        [HttpDelete("removefromcart")]
+        [HttpDelete("removefromcart/{cartId}")]
         public IActionResult RemoveFromCart(int cartId)
         {
             try

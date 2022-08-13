@@ -110,10 +110,12 @@ namespace BookStore.Controllers
         }
         [HttpGet]
         [Route("getuserbyid")]
-        public IActionResult GetUserById(int userId)
+        [Authorize(Roles = Role.User)]
+        public IActionResult GetUserById()
         {
             try
             {
+                int userId = Convert.ToInt32(User.Claims.FirstOrDefault(x => x.Type == "UserId").Value);
                 var result = manager.GetUserById(userId);
                 if (result != null)
                 {

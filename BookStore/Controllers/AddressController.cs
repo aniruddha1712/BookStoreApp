@@ -62,7 +62,7 @@ namespace BookStore.Controllers
                 throw new Exception(ex.Message);
             }
         }
-        [HttpDelete("deleteAddress")]
+        [HttpDelete("deleteAddress/{addressId}")]
         public IActionResult DeleteAddress(int addressId)
         {
             try
@@ -83,7 +83,7 @@ namespace BookStore.Controllers
                 throw new Exception(ex.Message);
             }
         }
-        [HttpGet("getaddressbyId")]
+        [HttpGet("getaddressbyId/{addressId}")]
         public IActionResult GetAddressById(int addressId)
         {
             try

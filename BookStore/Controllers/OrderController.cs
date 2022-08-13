@@ -22,7 +22,7 @@ namespace BookStore.Controllers
         }
 
         [HttpPost("placeorder")]
-        public IActionResult AddFeedback(PlaceOrderModel order)
+        public IActionResult PlaceOrder(PlaceOrderModel order)
         {
             try
             {
